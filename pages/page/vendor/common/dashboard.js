@@ -27,10 +27,10 @@ import sale from "../../../../public/assets/images/icon/dashboard/sale.png";
 import homework from "../../../../public/assets/images/icon/dashboard/homework.png";
 import one from "../../../../public/assets/images/dashboard/product/1.jpg";
 import nine from "../../../../public/assets/images/dashboard/product/9.jpg";
-import thirtyfour from "../../../../public/assets/images/pro3/34.jpg";
-import pro1 from "../../../../public/assets/images/pro3/1.jpg";
-import pro27 from "../../../../public/assets/images/pro3/27.jpg";
-import pro36 from "../../../../public/assets/images/pro3/36.jpg";
+const thirtyfour = { src: "/assets/images/final/KS_03827.JPG" };
+const pro1 = { src: "/assets/images/final/KS_03830.jpg" };
+const pro27 = { src: "/assets/images/final/KS_03833.jpg" };
+const pro36 = { src: "/assets/images/final/KS_03871.JPG" };
 import dynamic from "next/dynamic";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 

@@ -7,7 +7,7 @@ import ProductItem from "../product-box/ProductBox12";
 import CartContext from "../../../helpers/cart/index";
 import { Container, Media, Col, Row } from "reactstrap";
 import { WishlistContext } from "../../../helpers/wishlist/WishlistContext";
-import banner from "../../../public/assets/images/tools/banner.jpg";
+const banner = { src: "/assets/images/final/KS_03936.JPG" };
 import { CurrencyContext } from "../../../helpers/Currency/CurrencyContext";
 import { Product4 } from "../../../services/script";
 import { CompareContext } from "../../../helpers/Compare/CompareContext";
