@@ -7,7 +7,7 @@ const nextConfig = {
 
   // if you want to run with local graphQl un-comment below one and comment the above code
   env: {
-    API_URL: "http://localhost:4000/graphql",
+    API_URL: "https://dreamstitch-api.onrender.com/graphql" || "http://localhost:4000/graphql",
   },
   reactStrictMode: true,
 };
