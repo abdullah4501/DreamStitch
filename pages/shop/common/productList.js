@@ -1,11 +1,10 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { Col, Row, Media, Button, Spinner } from "reactstrap";
 import { useQuery } from "@apollo/client";
 import { gql } from "@apollo/client";
 import FilterContext from "../../../helpers/filter/FilterContext";
 import ProductItem from "../../../components/common/product-box/ProductBox1";
 import { CurrencyContext } from "../../../helpers/Currency/CurrencyContext";
-import { useRouter } from "next/router";
 import PostLoader from "../../../components/common/PostLoader";
 import CartContext from "../../../helpers/cart";
 import { WishlistContext } from "../../../helpers/wishlist/WishlistContext";
@@ -69,8 +68,7 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
   const quantity = cartContext.quantity;
   const wishlistContext = useContext(WishlistContext);
   const compareContext = useContext(CompareContext);
-  const router = useRouter();
-  const [limit, setLimit] = useState(8);
+  const [limit, setLimit] = useState(16);
   const curContext = useContext(CurrencyContext);
   const [grid, setGrid] = useState(colClass);
   const symbol = curContext.state.symbol;
@@ -83,16 +81,6 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
   const [sortBy, setSortBy] = useState("AscOrder");
   const [isLoading, setIsLoading] = useState(false);
   const [layout, setLayout] = useState(layoutList);
-  const [url, setUrl] = useState();
-
-  useEffect(() => {
-    const pathname = window.location.pathname;
-    setUrl(pathname);
-    router.push(
-      `${pathname}?${filterContext.state}&brand=${selectedBrands}&color=${selectedColor}&size=${selectedSize}&minPrice=${selectedPrice.min}&maxPrice=${selectedPrice.max}`, undefined, { shallow: true }
-    );
-  }, [selectedBrands, selectedColor, selectedSize, selectedPrice]);
-
   var { loading, data, fetchMore } = useQuery(GET_PRODUCTS, {
     variables: {
       type: selectedCategory,
@@ -193,7 +181,9 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
                   {
                     <li>
                       <a href={null} className="filter_tag">
-                        price: {selectedPrice.min}- {selectedPrice.max}
+                        price: {symbol}
+                        {selectedPrice.min}- {symbol}
+                        {selectedPrice.max}
                       </a>
                     </li>
                   }
@@ -299,9 +289,7 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
                         <select
                           onChange={(e) => setLimit(parseInt(e.target.value))}
                         >
-                          <option value="10">10 Products Per Page</option>
-                          <option value="15">15 Products Per Page</option>
-                          <option value="20">20 Products Per Page</option>
+                          <option value="16">16 Products Per Page</option>
                         </select>
                       </div>
                       <div className="product-page-filter">
@@ -339,9 +327,9 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
                               alt=""
                             />
                             <h3>
-                              <strong>Your Cart is Empty</strong>
+                              <strong>No products found</strong>
                             </h3>
-                            <h4>Explore more shortlist some items.</h4>
+                            <h4>Please adjust your filters or check back soon.</h4>
                           </div>
                         </div>
                       </Col>

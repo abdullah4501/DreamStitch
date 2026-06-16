@@ -6,7 +6,6 @@ import Parallax from "./layouts/Fashion/Components/Parallax";
 import SpecialProducts from "../components/common/Collections/TabCollection1";
 import ServiceLayout from "../components/common/Service/service1";
 // import Blog from "../components/common/Blog/blog1";
-import LogoBlock from "../components/common/logo-block";
 import HeaderOne from "../components/headers/header-one";
 import { Product4 } from "../services/script";
 import Paragraph from "../components/common/Paragraph";
@@ -18,6 +17,10 @@ const Fashion = () => {
     <>
       <Helmet>
         <title>Dream Stitch | Men's Wear</title>
+        <meta
+          name="description"
+          content="Shop Dream Stitch for premium sherwani, Jodhpuri suits, waistcoat sets, and formal men's suits crafted for weddings and special occasions."
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/x-icon" href={"/assets/images/favicon/1.png"} />
       </Helmet>
@@ -25,14 +28,11 @@ const Fashion = () => {
       <Banner />
       <CollectionBanner />
       <Paragraph title="title1 section-t-space" inner="title-inner1" hrClass={false} />
-      <TopCollection noTitle="null" backImage={true} type="fashion" title="Men's Collection" subtitle="New Arrivals" productSlider={Product4} designClass="section-b-space p-t-0 ratio_asos px-2" noSlider="false" cartClass="cart-info cart-wrap" />
+      <TopCollection noTitle="null" backImage={true} type="fashion" title="Men's Collection" subtitle="Complete Range" productSlider={Product4} designClass="section-b-space p-t-0 ratio_asos px-2" noSlider="false" cartClass="cart-info cart-wrap" />
       <Parallax />
       <SpecialProducts type="fashion" backImage={true} productSlider={Product4} line={true} title="title1 section-t-space" inner="title-inner1" designClass="section-b-space p-t-0 ratio_asos" noSlider="true" cartClass="cart-info cart-wrap" />
       <ServiceLayout sectionClass="border-section small-section" />
       {/* <Blog type="fashion" title="title1" inner="title-inner1" /> */}
-      <div className="section-b-space">
-        <LogoBlock />
-      </div>
       <MasterFooter footerClass={`footer-light`} footerLayOut={"light-layout upper-footer"} footerSection={"small-section border-section border-top-0"} belowSection={"section-b-space light-layout"} newLatter={true} logoName={"logo.jpeg"} />
     </>
   );

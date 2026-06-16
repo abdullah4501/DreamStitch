@@ -5,15 +5,15 @@ const Data = [
   {
     img: "/assets/images/final/KS_03827.JPG",
     about: "Men's Collection",
-    offer: "New Arrivals",
-    link: "/shop/six_grid",
+    offer: "Wedding Wear",
+    link: "/shop/collection",
     class: "p-right text-center",
   },
   {
     img: "/assets/images/final/KS_04198.JPG",
     about: "Made to Order",
     offer: "Custom Fit",
-    link: "/page/account/contact",
+    link: "/page/made-to-order",
     class: "p-right text-center",
   },
 ];

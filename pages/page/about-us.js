@@ -76,8 +76,8 @@ const AboutUs = () => {
                     <p>Custom Fit Guarantee</p>
                   </Col>
                   <Col md="4" className="text-center mb-3">
-                    <h3 style={{ color: "#ff9d07", fontWeight: "700" }}>6+</h3>
-                    <p>Product Categories</p>
+                    <h3 style={{ color: "#ff9d07", fontWeight: "700" }}>20+</h3>
+                    <p>Material Categories</p>
                   </Col>
                 </Row>
               </Col>

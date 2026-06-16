@@ -44,10 +44,18 @@ export default function MyApp({ Component, pageProps }) {
           /> */}
             <Helmet>
               <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <meta
+                name="description"
+                content="Dream Stitch creates premium men's wear, including sherwani, Jodhpuri suits, kurta shalwar, waistcoats, and formal suits tailored with care."
+              />
+              <meta
+                name="keywords"
+                content="Dream Stitch, menswear, sherwani, Jodhpuri suit, kurta shalwar, formal suits, Pakistani men's wear"
+              />
               {/* <Head>
               <link rel="icon" type="image/x-icon" href={favicon} />
             </Head> */}
-              <title>Dream Stitch | Fashion</title>
+              <title>Dream Stitch | Premium Men's Wear</title>
             </Helmet>
             <div>
               <SettingProvider>

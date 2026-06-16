@@ -108,7 +108,7 @@ const MasterFooter = ({
                       <LogoImage logo={logoName} />
                     </div>
                     <p>
-                      Premium men's wear crafted with precision — sherwani, suits, kurta shalwar &amp; more. Quality tailoring delivered across Pakistan.
+                      Premium men's wear crafted with precision: sherwani, suits, kurta shalwar, formal shirts, and more. Quality tailoring delivered across Pakistan.
                     </p>
                     <div className="footer-social">
                       <ul>
@@ -161,7 +161,7 @@ const MasterFooter = ({
                           setCollapse(2);
                         } else setIsOpen(true);
                       }}>
-                      my account
+                      shop
                       <span className="according-menu"></span>
                     </h4>
                   </div>
@@ -170,30 +170,30 @@ const MasterFooter = ({
                     <div className="footer-contant">
                       <ul>
                         <li>
-                          <Link href={`/shop/six_grid`}>
+                          <Link href={`/shop/collection`}>
                             {/* <a> */}
-                            womens
+                            sherwani
                             {/* </a> */}
                           </Link>
                         </li>
                         <li>
-                          <Link href={`/shop/six_grid`}>
+                          <Link href={`/shop/collection`}>
                             {/* <a>  */}
-                            clothing
+                            kurta shalwar
                             {/* </a> */}
                           </Link>
                         </li>
                         <li>
-                          <Link href={`/shop/six_grid`}>
+                          <Link href={`/shop/collection`}>
                             {/* <a> */}
-                            accessories
+                            suits
                             {/* </a> */}
                           </Link>
                         </li>
                         <li>
-                          <Link href={`/shop/six_grid`}>
+                          <Link href={`/shop/collection`}>
                             {/* <a> */}
-                            featured
+                            formal shirts
                             {/* </a> */}
                           </Link>
                         </li>
@@ -215,7 +215,7 @@ const MasterFooter = ({
                           setCollapse(3);
                         } else setIsOpen(true);
                       }}>
-                      why we choose
+                      customer care
                       <span className="according-menu"></span>
                     </h4>
                   </div>
@@ -224,16 +224,16 @@ const MasterFooter = ({
                     <div className="footer-contant">
                       <ul>
                         <li>
-                          <a href="#">shipping & return</a>
+                          <a href="#">shipping and returns</a>
                         </li>
                         <li>
                           <a href="#">secure shopping</a>
                         </li>
                         <li>
-                          <a href="#">gallary</a>
+                          <a href="#">size guidance</a>
                         </li>
                         <li>
-                          <a href="#">affiliates</a>
+                          <Link href="/page/made-to-order">custom orders</Link>
                         </li>
                         <li>
                           <a href="#">contacts</a>
@@ -266,14 +266,14 @@ const MasterFooter = ({
                       <ul className="contact-list">
                         <li>
                           <i className="fa fa-map-marker"></i>Dream Stitch,
-                          Fashion Store
+                          Premium Men's Wear
                         </li>
                         <li>
                           <i className="fa fa-phone"></i>Call Us: +92 311-1294411
                         </li>
                         <li>
                           <i className="fa fa-envelope-o"></i>Email Us:{" "}
-                          <a href="mailto:info@thedreamstiches.com">info@thedreamstiches.com</a>
+                          <a href="mailto:info@thedreamstitches.com">info@thedreamstitches.com</a>
                         </li>
                         <li>
                           <i className="fa fa-globe"></i>thedreamstitches.com

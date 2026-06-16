@@ -1686,7 +1686,7 @@ header {
     background-repeat: no-repeat;
     background-position: center;
     height: 75vh;
-    @for $i from 1 through 56 {
+    @for $i from 1 through 2 {
       &.home#{$i} {
         background-image: url("#{$assetspath}/home-banner/#{$i}.jpg");
       }
@@ -3809,16 +3809,89 @@ del {
   padding-top: 190px;
   padding-bottom: 190px;
   background-position: center;
-  // &.jewellery-bg0{
-  //   background-image: url('/assets/images/parallax/18.jpg');
-  // }
   @for $i from 1 through 28 {
     &.parallax-banner#{$i} {
       background-image: url("#{$assetspath}/parallax/#{$i}.jpg");
     }
   }
   &.parallax-banner1 {
-    background-image: url("#{$assetspath}/final/KS_04076.JPG");
+    background-image: url("#{$assetspath}/final/KS_04076.jpg");
+  }
+  &.dream-stitch-parallax {
+    min-height: 520px;
+    display: flex;
+    align-items: center;
+    padding-top: 95px;
+    padding-bottom: 95px;
+    background-position: center 32%;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(9, 9, 9, 0.82) 0%, rgba(9, 9, 9, 0.62) 38%, rgba(9, 9, 9, 0.18) 72%, rgba(9, 9, 9, 0.04) 100%);
+      z-index: 0;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 42%;
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), transparent);
+      z-index: 0;
+    }
+
+    .container,
+    .row,
+    .col,
+    [class*="col-"] {
+      position: relative;
+      z-index: 1;
+    }
+
+    .banner-contain {
+      float: none;
+      max-width: 560px;
+      padding: 0;
+      text-align: left;
+      background: transparent;
+
+      .banner-kicker {
+        display: inline-block;
+        margin-bottom: 14px;
+        color: var(--theme-deafult);
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        color: $white;
+        font-size: 52px;
+        font-weight: 700;
+        line-height: 1.05;
+        margin-bottom: 18px;
+        text-transform: none;
+      }
+
+      p {
+        max-width: 500px;
+        color: rgba($white, 0.88);
+        font-size: 18px;
+        line-height: 1.7;
+        margin-bottom: 28px;
+      }
+
+      .btn {
+        padding: 12px 28px;
+        font-size: 14px;
+        letter-spacing: 0.04em;
+      }
+    }
   }
   &.parallax-christmas {
     background-image: url("/assets/images/christmas/parallax/1.jpg");
@@ -6507,9 +6580,6 @@ footer {
     margin-right: 12px;
   }
 }
-.marijuana-mini-banner {
-  background-image: url("/assets/images/parallax/23.jpg") !important;
-}
 .email-template-table {
   &.table {
     td {
@@ -6525,7 +6595,6 @@ footer {
 }
 .tools-parallax-product {
   &.full-banner {
-    background-image: url("/assets/images/parallax/21.jpg");
     background-size: cover;
     background-position: center center;
     display: block;
@@ -11593,7 +11662,6 @@ footer {
 }
 .p-0 {
   .home-slider {
-    // background-image: url('/assets/images/home-banner/33.jpg');
     background-size: cover;
     background-position: center center;
     display: block;
@@ -12535,7 +12603,6 @@ table {
       right: -0;
       height: 100%;
       display: block;
-      background: url("/assets/images/vendor/step-arrow.png") no-repeat center center;
     }
     .row {
       margin-left: -50px;
@@ -13880,4 +13947,395 @@ video#background-video {
 }
 .full-banner .banner-contain h3, .full-banner .banner-contain .h3 {
   color: #fff !important;
+}
+
+.made-order-page {
+  .made-order-intro {
+    padding: 35px 0 10px;
+  }
+
+  .made-order-copy,
+  .made-order-form-copy,
+  .made-order-contact,
+  .made-order-form {
+    h2,
+    h3,
+    h4,
+    p {
+      letter-spacing: 0;
+    }
+  }
+
+  .made-order-copy {
+    span {
+      color: var(--theme-deafult);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      max-width: 760px;
+      margin: 10px 0 16px;
+      color: $font-color;
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1.22;
+      text-transform: none;
+    }
+
+    p {
+      max-width: 720px;
+      color: $grey;
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 0;
+    }
+  }
+
+  .made-order-contact {
+    padding: 28px;
+    border: 1px solid $round-border;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.92), rgba(35, 35, 35, 0.88));
+    color: $white;
+
+    h4 {
+      color: $white;
+      margin-bottom: 10px;
+      text-transform: none;
+    }
+
+    p {
+      color: rgba($white, 0.74);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .made-order-contact-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 11px 18px;
+      }
+
+      .btn-outline {
+        color: $white;
+        border-color: rgba($white, 0.45);
+
+        &:hover {
+          color: $white;
+          border-color: var(--theme-deafult);
+          background-color: var(--theme-deafult);
+        }
+      }
+    }
+  }
+
+  .made-order-fabric-grid {
+    margin-top: 28px;
+    row-gap: 28px;
+  }
+
+  .fabric-card {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 1px solid $round-border;
+    background: $white;
+    text-align: left;
+    transition: all 0.25s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 34px rgba($black, 0.12);
+     
+    }
+
+    .fabric-image {
+      display: block;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background: #f7f7f7;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.35s ease;
+        border-radius: 15px 15px 0 0;
+      }
+    }
+
+    .fabric-content {
+      display: block;
+      padding: 18px;
+
+      strong {
+        display: block;
+        margin-bottom: 8px;
+        color: $font-color;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      small {
+        display: block;
+        color: $grey;
+        font-size: 14px;
+        line-height: 1.65;
+      }
+    }
+  }
+
+  .made-order-form-section {
+    margin-top: 65px;
+    padding-top: 45px;
+    border-top: 1px solid $round-border;
+  }
+
+  .made-order-form-copy {
+    position: sticky;
+    top: 95px;
+
+    span {
+      color: var(--theme-deafult);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h3 {
+      margin: 10px 0 14px;
+      font-size: 28px;
+      line-height: 1.25;
+      text-transform: none;
+    }
+
+    p {
+      color: $grey;
+      line-height: 1.75;
+    }
+
+    ul {
+      margin-top: 20px;
+
+      li {
+        position: relative;
+        padding-left: 22px;
+        color: $font-color;
+        line-height: 1.9;
+
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 13px;
+          width: 8px;
+          height: 8px;
+          background-color: var(--theme-deafult);
+          border-radius: 50%;
+        }
+      }
+    }
+
+    .made-order-size-chart {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 260px;
+      margin-top: 24px;
+      padding: 10px;
+      border: 1px solid $round-border;
+      background-color: $white;
+      color: $font-color;
+      text-align: left;
+      box-shadow: 0 10px 24px rgba($black, 0.06);
+      transition: all 0.2s ease;
+
+      img {
+        width: 58px;
+        height: 72px;
+        object-fit: cover;
+        border: 1px solid rgba($black, 0.08);
+      }
+
+      span {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      strong {
+        font-size: 14px;
+        line-height: 1.2;
+        text-transform: uppercase;
+      }
+
+      small {
+        color: $grey;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      &:hover {
+        border-color: var(--theme-deafult);
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  .made-order-form {
+    padding: 32px;
+    border: 1px solid $round-border;
+    background-color: $white;
+    box-shadow: 0 16px 34px rgba($black, 0.06);
+
+    .row {
+      row-gap: 18px;
+    }
+
+    .form-label {
+      margin-bottom: 8px;
+      color: $font-color;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    input,
+    select,
+    textarea,
+    .form-control {
+      border-color: $round-border;
+      color: $font-color;
+      min-height: 46px;
+      font-size: 14px;
+
+      &:focus {
+        border-color: var(--theme-deafult);
+        box-shadow: none;
+      }
+    }
+  }
+
+  .selected-fabric-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 46px;
+    padding: 8px 10px;
+    border: 1px solid $round-border;
+    background-color: #fafafa;
+    color: $font-color;
+    text-align: left;
+
+    img {
+      width: 44px;
+      height: 44px;
+      object-fit: cover;
+    }
+
+    span {
+      font-weight: 600;
+    }
+  }
+
+  .made-order-color-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .color-choice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid $round-border;
+    background-color: #fafafa;
+    color: $font-color;
+    font-weight: 600;
+    text-align: left;
+    transition: all 0.2s ease;
+
+    span {
+      width: 20px;
+      height: 20px;
+      border: 1px solid rgba($black, 0.18);
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 2px rgba($white, 0.55);
+    }
+
+    &.active,
+    &:hover {
+      border-color: var(--theme-deafult);
+      background-color: rgba(255, 153, 0, 0.08);
+    }
+  }
+
+  .measurement-title {
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px solid $round-border;
+    color: var(--theme-deafult);
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .made-order-submit-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+
+    .btn {
+      padding: 12px 24px;
+    }
+  }
+}
+
+.fabric-preview-modal {
+  .modal-body {
+    position: relative;
+    padding: 22px;
+    text-align: center;
+
+    .btn-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      z-index: 1;
+      --bs-btn-close-color: #fff;
+    }
+
+    img {
+      width: 100%;
+      max-height: 560px;
+      object-fit: contain;
+      border-radius: 10px;
+      background-color: #f7f7f7;
+    }
+
+    h4 {
+      margin: 18px 0 8px;
+      text-transform: none;
+    }
+
+    p {
+      color: $grey;
+      line-height: 1.7;
+      margin-bottom: 0;
+    }
+  }
 }

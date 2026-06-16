@@ -7,14 +7,14 @@ const Data = [
     img: "home1",
     title: "Dream Stitch",
     desc: "Men's Collection",
-    link: "/shop/six_grid",
+    link: "/shop/collection",
     btn: "Shop Now",
   },
   {
     img: "home2",
     title: "Crafted for You",
     desc: "Made to Order",
-    link: "/page/account/contact",
+    link: "/page/made-to-order",
     btn: "Order Now",
   },
 ];

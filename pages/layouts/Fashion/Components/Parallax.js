@@ -9,7 +9,7 @@ const Parallax = () => {
         parallaxClass="text-center p-left"
         title="Dream Stitch"
         subTitle1="Crafted for the Modern Man"
-        subTitle2="Sherwani · Suits · Kurta Shalwar"
+        subTitle2="Premium sherwani, Jodhpuri suits, waistcoat sets, and formal menswear tailored for weddings and special occasions."
       />
     </Fragment>
   );

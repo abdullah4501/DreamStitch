@@ -80,7 +80,7 @@ const CartComponent = ({ icon, layout }) => {
               <li>
                 <div className="total">
                   <h5>
-                    subtotal : <span>${total}</span>
+                    subtotal : <span>{symbol}{total}</span>
                   </h5>
                 </div>
               </li>

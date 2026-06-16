@@ -54,7 +54,7 @@ const TopCollection = ({ type, title, subtitle, designClass, noSlider, cartClass
     variables: {
       type: type,
       indexFrom: 0,
-      limit: 8,
+      limit: 16,
     },
   });
 
@@ -150,7 +150,7 @@ const TopCollection = ({ type, title, subtitle, designClass, noSlider, cartClass
                   </div>
                 ) : (
                   data &&
-                  data.products.items.slice(0, 8).map((product, index) => (
+                  data.products.items.slice(0, 16).map((product, index) => (
                     <Col xl="3" sm="6" key={index}>
                       <div>
                         <ProductItems product={product} backImage={backImage} addCompare={() => comapreList.addToCompare(product)} addWishlist={() => contextWishlist.addToWish(product)} title={title} cartClass={cartClass} addCart={() => context.addToCart(product, quantity)} key={index} />

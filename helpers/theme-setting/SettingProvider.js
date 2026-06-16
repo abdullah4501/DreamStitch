@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import SettingContext from "./SettingContext";
-import config from "../../components/customizer/config.json";
+
 const SettingProvider = (props) => {
   const [layoutState, setLayoutState] = useState("RTL");
-  const [layoutColor, setLayoutColor] = useState("#ff4c3b");
+  const [layoutColor, setLayoutColor] = useState("#ff9d07");
   const layoutFun = (item) => {
     if (item === "RTL") {
       document.body.classList.remove("ltr");
@@ -16,11 +16,8 @@ const SettingProvider = (props) => {
     }
   };
 
-  console.log("layoutState",layoutState)
-
   const layoutColorFun = (item) => {
     document.documentElement.style.setProperty("--theme-deafult", item.target.value);
-    config.color = item.target.value;
     localStorage.setItem("color", item.target.value);
     setLayoutColor(item.target.value);
   };

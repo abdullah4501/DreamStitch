@@ -1,5 +1,4 @@
-import React, { useState, useContext } from "react";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import React, { useContext } from "react";
 import { useQuery } from "@apollo/client";
 import { gql } from "@apollo/client";
 import ProductItem from "../product-box/ProductBox1";
@@ -79,9 +78,9 @@ const TabContent = ({
                   alt=""
                 />
                 <h3>
-                  <strong>Your Cart is Empty</strong>
+                  <strong>No products found</strong>
                 </h3>
-                <h4>Explore more shortlist some items.</h4>
+                <h4>Please adjust your filters or check back soon.</h4>
               </div>
             </div>
           </Col>
@@ -135,19 +134,11 @@ const SpecialProducts = ({
   hrClass,
   backImage,
 }) => {
-  const [activeTab, setActiveTab] = useState(type);
-  const context = useContext(CartContext);
-  const wishListContext = useContext(WishlistContext);
-  const compareContext = useContext(CompareContext);
-  const curContext = useContext(CurrencyContext);
-  const currency = curContext.state;
-  const quantity = context.quantity;
-
   var { loading, data } = useQuery(GET_PRODUCTS, {
     variables: {
-      type: activeTab,
+      type,
       indexFrom: 0,
-      limit: 8,
+      limit: 16,
     },
   });
 
@@ -160,8 +151,8 @@ const SpecialProducts = ({
             ""
           ) : (
             <div className={title}>
-              <h4>exclusive products</h4>
-              <h2 className={inner}>special products</h2>
+              <h4>Dream Stitch Menswear</h4>
+              <h2 className={inner}>Complete Collection</h2>
               {line ? (
                 <div className="line"></div>
               ) : hrClass ? (
@@ -172,59 +163,16 @@ const SpecialProducts = ({
             </div>
           )}
 
-          <Tabs className="theme-tab">
-            <TabList className="tabs tab-title">
-              <Tab
-                className={activeTab == type ? "active" : ""}
-                onClick={() => setActiveTab(type)}
-              >
-                NEW ARRIVAL
-              </Tab>
-              <Tab
-                className={activeTab == "furniture" ? "active" : ""}
-                onClick={() => setActiveTab("furniture")}
-              >
-                FEATURED{" "}
-              </Tab>
-              <Tab
-                className={activeTab == "furniture" ? "active" : ""}
-                onClick={() => setActiveTab("furniture")}
-              >
-                SPECIAL
-              </Tab>
-            </TabList>
-
-            <TabPanel>
-              <TabContent
-                data={data}
-                loading={loading}
-                startIndex={0}
-                endIndex={8}
-                cartClass={cartClass}
-                backImage={backImage}
-              />
-            </TabPanel>
-            <TabPanel>
-              <TabContent
-                data={data}
-                loading={loading}
-                startIndex={0}
-                endIndex={8}
-                cartClass={cartClass}
-                backImage={backImage}
-              />
-            </TabPanel>
-            <TabPanel>
-              <TabContent
-                data={data}
-                loading={loading}
-                startIndex={0}
-                endIndex={8}
-                cartClass={cartClass}
-                backImage={backImage}
-              />
-            </TabPanel>
-          </Tabs>
+          <div className="theme-tab">
+            <TabContent
+              data={data}
+              loading={loading}
+              startIndex={0}
+              endIndex={16}
+              cartClass={cartClass}
+              backImage={backImage}
+            />
+          </div>
         </Container>
       </section>
     </div>

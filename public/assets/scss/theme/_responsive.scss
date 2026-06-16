@@ -21,6 +21,64 @@ body {
   }
 }
 
+@media (max-width: 991px) {
+  .made-order-page {
+    .made-order-contact {
+      margin-top: 26px;
+    }
+
+    .made-order-form-copy {
+      position: static;
+      margin-bottom: 28px;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .made-order-page {
+    .made-order-copy {
+      h2 {
+        font-size: 26px;
+        line-height: 1.25;
+      }
+
+      p {
+        font-size: 14px;
+      }
+    }
+
+    .made-order-contact,
+    .made-order-form {
+      padding: 22px;
+    }
+
+    .made-order-contact-actions,
+    .made-order-submit-row {
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    .made-order-color-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .made-order-form-section {
+      margin-top: 45px;
+      padding-top: 35px;
+    }
+  }
+}
+
+@media (max-width: 420px) {
+  .made-order-page {
+    .made-order-color-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
 @media (min-width: 1430px) {
   .container {
     max-width: 1400px;
@@ -5155,6 +5213,39 @@ body {
   .full-banner {
     padding-top: 50px;
     padding-bottom: 50px;
+    &.dream-stitch-parallax {
+      min-height: 430px;
+      padding-top: 70px;
+      padding-bottom: 70px;
+      background-position: 60% center;
+
+      &::before {
+        background: linear-gradient(90deg, rgba(9, 9, 9, 0.86) 0%, rgba(9, 9, 9, 0.68) 55%, rgba(9, 9, 9, 0.32) 100%);
+      }
+
+      .banner-contain {
+        padding: 0;
+        background: transparent;
+
+        .banner-kicker {
+          font-size: 12px;
+          margin-bottom: 10px;
+          letter-spacing: 0.1em;
+        }
+
+        h2 {
+          font-size: 36px;
+          line-height: 1.1;
+          margin-bottom: 14px;
+        }
+
+        p {
+          font-size: 15px;
+          line-height: 1.55;
+          margin-bottom: 22px;
+        }
+      }
+    }
     &.parallax-layout {
       padding-top: 50px;
       padding-bottom: 50px;
