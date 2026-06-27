@@ -5,9 +5,10 @@ const nextConfig = {
   //   API_URL: "https://multikart-graphql-reactpixelstrap.vercel.app/server.js",
   // },
 
-  // if you want to run with local graphQl un-comment below one and comment the above code
   env: {
-    API_URL: "https://dreamstitch-api.onrender.com/graphql" || "http://localhost:4000/graphql",
+    API_URL: "http://localhost:4000/graphql",
+    // API_URL: "https://dreamstitch-api.onrender.com/graphql",
+    NEXT_PUBLIC_GOOGLE_CLIENT_ID: "121838754048-vcm0h37e2kre1uaq4ac1mgmtapvm54rr.apps.googleusercontent.com",
   },
   reactStrictMode: true,
 };

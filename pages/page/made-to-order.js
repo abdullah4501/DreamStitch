@@ -1,21 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import CommonLayout from "../../components/shop/common-layout";
 import { Container, Row, Col, Form, Label, Input, Modal, ModalBody, Media } from "reactstrap";
+import { toast } from "react-toastify";
 
-const phoneNumber = "+92 311-1294411";
-const whatsappUrl = "https://wa.me/923111294411?text=Assalam%20o%20Alaikum%2C%20I%20want%20to%20place%20a%20made-to-order%20request%20with%20Dream%20Stitch.";
+const phoneNumber = "+92 329-8386422";
+const whatsappUrl = "https://wa.me/923298386422?text=Assalam%20o%20Alaikum%2C%20I%20want%20to%20place%20a%20made-to-order%20request%20with%20Dream%20Stitch.";
 const sizeChart = {
   name: "Size Chart",
   image: "/assets/images/size-chart.jpg",
 };
 
-const fabrics = Array.from({ length: 9 }, (_, index) => ({
-  id: `fabric-${index + 1}`,
-  name: `Fabric ${index + 1}`,
-  description: "Premium fabric sample for made-to-order menswear. Final details, availability, and matching will be confirmed by our team.",
-  image: `/assets/images/fabrics/fab${index + 1}.png`,
-}));
+const FABRICS = gql`
+  query Fabrics {
+    fabrics {
+      id
+      name
+      description
+      images {
+        src
+        alt
+      }
+    }
+  }
+`;
+
+const CREATE_MADE_TO_ORDER = gql`
+  mutation CreateMadeToOrderRequest($input: MadeToOrderInput!) {
+    createMadeToOrderRequest(input: $input) {
+      id
+      status
+    }
+  }
+`;
 
 const categories = [
   "Kameez Shalwar",
@@ -40,17 +58,59 @@ const colors = [
 ];
 
 const MadeToOrder = () => {
+  const { data } = useQuery(FABRICS);
+  const [createRequest, { loading: submitting }] = useMutation(CREATE_MADE_TO_ORDER);
+  const fabrics = data?.fabrics || [];
   const [previewFabric, setPreviewFabric] = useState(null);
-  const [selectedFabricId, setSelectedFabricId] = useState(fabrics[0].id);
+  const [selectedFabricId, setSelectedFabricId] = useState("");
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const selectedFabric = fabrics.find((fabric) => fabric.id === selectedFabricId) || fabrics[0];
+  const selectedFabricImage = selectedFabric?.images?.[0]?.src;
+
+  useEffect(() => {
+    if (!selectedFabricId && fabrics.length) {
+      setSelectedFabricId(fabrics[0].id);
+    }
+  }, [fabrics, selectedFabricId]);
 
   const openFabric = (fabric) => setPreviewFabric(fabric);
   const closeFabric = () => setPreviewFabric(null);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    alert("Your made-to-order request has been prepared. Our team will contact you for confirmation and final measurements.");
+    const formData = new FormData(event.currentTarget);
+    const measurementFields = ["Length", "Chest", "Shoulder", "Sleeve", "Neck", "Waist", "Hip", "Trouser Length", "Armhole"];
+    const measurements = measurementFields.reduce((acc, field) => {
+      const value = formData.get(field.replace(/\s/g, ""));
+      if (value) acc[field] = value;
+      return acc;
+    }, {});
+
+    try {
+      await createRequest({
+        variables: {
+          input: {
+            customerName: formData.get("customerName"),
+            phone: formData.get("phone"),
+            email: formData.get("email") || null,
+            category: formData.get("category"),
+            fabricId: formData.get("fabric") || null,
+            color: selectedColor.name,
+            fit: formData.get("fit"),
+            eventDate: formData.get("eventDate") || null,
+            city: formData.get("city") || null,
+            measurements: JSON.stringify(measurements),
+            embroidery: formData.get("embroidery"),
+            budget: formData.get("budget"),
+            instructions: formData.get("instructions") || null,
+          },
+        },
+      });
+      event.currentTarget.reset();
+      toast.success("Your made-to-order request has been submitted. Our team will contact you for confirmation.");
+    } catch (error) {
+      toast.error(error.message || "Unable to submit request.");
+    }
   };
 
   return (
@@ -67,7 +127,7 @@ const MadeToOrder = () => {
               <Col xl="4" md="6" key={fabric.id}>
                 <button type="button" className="fabric-card rounded-4" onClick={() => openFabric(fabric)}>
                   <span className="fabric-image">
-                    <Media src={fabric.image} alt={fabric.name} className=""/>
+                    <Media src={fabric.images?.[0]?.src} alt={fabric.name} className=""/>
                   </span>
                   <span className="fabric-content">
                     <strong>{fabric.name}</strong>
@@ -160,9 +220,9 @@ const MadeToOrder = () => {
                   </Col>
                   <Col md="5">
                     <Label className="form-label">Selected Fabric</Label>
-                    <button type="button" className="selected-fabric-preview" onClick={() => openFabric(selectedFabric)}>
-                      <Media src={selectedFabric.image} alt={selectedFabric.name} />
-                      <span>{selectedFabric.name}</span>
+                    <button type="button" className="selected-fabric-preview" onClick={() => selectedFabric && openFabric(selectedFabric)}>
+                      <Media src={selectedFabricImage} alt={selectedFabric?.name || "Selected fabric"} />
+                      <span>{selectedFabric?.name || "Select fabric"}</span>
                     </button>
                   </Col>
                   <Col md="12">
@@ -233,7 +293,7 @@ const MadeToOrder = () => {
                   </Col>
                   <Col md="12">
                     <div className="made-order-submit-row">
-                      <button className="btn btn-solid" type="submit">Submit Order</button>
+                      <button className="btn btn-solid" type="submit" disabled={submitting}>{submitting ? "Submitting..." : "Submit Order"}</button>
                       
                     </div>
                   </Col>
@@ -249,7 +309,7 @@ const MadeToOrder = () => {
           {previewFabric ? (
             <>
               <button type="button" className="btn-close" aria-label="Close" onClick={closeFabric}></button>
-              <Media src={previewFabric.image} alt={previewFabric.name} />
+              <Media src={previewFabric.image || previewFabric.images?.[0]?.src} alt={previewFabric.name} />
             </>
           ) : null}
         </ModalBody>

@@ -8,11 +8,18 @@ const MasterProductDetail = ({
   title,
   des,
 }) => {
-  let RatingStars = [];
-  let rating = 5;
-  for (var i = 0; i < rating; i++) {
-    RatingStars.push(<i className="fa fa-star" key={i}></i>);
-  }
+  const rating = Number(product.rating) || 5;
+  const RatingStars = Array.from({ length: 5 }, (_, index) => {
+    const starValue = index + 1;
+    const className =
+      rating >= starValue
+        ? "fa fa-star"
+        : rating >= starValue - 0.5
+        ? "fa fa-star-half-o"
+        : "fa fa-star-o";
+
+    return <i className={className} key={index}></i>;
+  });
 
   return (
     <div className={`product-detail ${productDetail} ${detailClass}`}>

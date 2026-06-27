@@ -1,7 +1,7 @@
 import React, { Fragment, useContext } from "react";
 import Link from "next/link";
 import CartContext from "../../../helpers/cart";
-import { Media } from "reactstrap";
+import ProductImage from "../../common/ProductImage";
 
 const CartHeader = ({ item, symbol }) => {
   const context = useContext(CartContext);
@@ -11,13 +11,14 @@ const CartHeader = ({ item, symbol }) => {
         <div className="media">
           <Link href={"/product-details/" + item.id}>
             {/* <a> */}
-            <Media alt="" className="me-3" src={`${item.images[0].src}`} />
+            <ProductImage alt={item.title} className="me-3" src={item.images?.[0]?.src} />
             {/* </a> */}
           </Link>
           <div className="media-body">
             <Link href={"/product-details/" + item.id}>
               {/* <a> */}
               <h6>{item.title}</h6>
+              {item.variantSize || item.selectedSize ? <small>Size: {item.variantSize || item.selectedSize}</small> : null}
               {/* </a> */}
             </Link>
 

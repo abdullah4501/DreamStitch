@@ -109,7 +109,7 @@ const AboutUs = () => {
               </Col>
               <Col md="4" className="text-center mb-3">
                 <i className="fa fa-phone fa-2x mb-2" style={{ color: "#ff9d07" }}></i>
-                <p><strong>Phone / WhatsApp</strong><br />+92 311-1294411</p>
+                <p><strong>Phone / WhatsApp</strong><br />+92 329-8386422</p>
               </Col>
               <Col md="4" className="text-center mb-3">
                 <i className="fa fa-envelope fa-2x mb-2" style={{ color: "#ff9d07" }}></i>

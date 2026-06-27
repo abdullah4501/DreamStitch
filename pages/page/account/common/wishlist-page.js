@@ -4,6 +4,7 @@ import { WishlistContext } from "../../../../helpers/wishlist/WishlistContext";
 import CartContext from "../../../../helpers/cart/index";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import ProductImage from "../../../../components/common/ProductImage";
 
 const WishlistPage = () => {
   const router = useRouter();
@@ -40,7 +41,7 @@ const WishlistPage = () => {
                       <tr>
                         <td>
                           <a href="#">
-                            <img src={item.images[0].src} alt="" />
+                            <ProductImage src={item.images?.[0]?.src} alt={item.title} />
                           </a>
                         </td>
                         <td>

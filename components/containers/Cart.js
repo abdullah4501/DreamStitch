@@ -3,6 +3,7 @@ import Link from "next/link";
 import CartContext from "../../helpers/cart";
 import { Media } from "reactstrap";
 import { CurrencyContext } from "../../helpers/Currency/CurrencyContext";
+import ProductImage from "../common/ProductImage";
 
 const CartComponent = ({ icon, layout }) => {
   const context = useContext(CartContext);
@@ -51,15 +52,12 @@ const CartComponent = ({ icon, layout }) => {
                   <li key={`cart-popup-${index}`}>
                     <div className="media">
                       <a href={null}>
-                        <Media
-                          alt=""
-                          className="me-3"
-                          src={`${item.images[0].src}`}
-                        />
+                        <ProductImage alt={item.title} className="me-3" src={item.images?.[0]?.src} />
                       </a>
                       <div className="media-body">
                         <a href={null}>
                           <h4>{item.title}</h4>
+                          {item.variantSize || item.selectedSize ? <small>Size: {item.variantSize || item.selectedSize}</small> : null}
                         </a>
                         <h4>
                           <span>

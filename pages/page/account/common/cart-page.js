@@ -4,6 +4,7 @@ import CartContext from "../../../../helpers/cart";
 import { Container, Row, Col, Media, Input } from "reactstrap";
 import { CurrencyContext } from "../../../../helpers/Currency/CurrencyContext";
 import cart from "../../../../public/assets/images/icon-empty-cart.png";
+import ProductImage from "../../../../components/common/ProductImage";
 
 const CartPage = () => {
   const context = useContext(CartContext);
@@ -68,20 +69,14 @@ const CartPage = () => {
                         <tr>
                           <td>
                             <Link href={`/left-sidebar/product/` + item.id}>
-                              <Media
-                                src={
-                                  item.images
-                                    ? item.images[0].src
-                                    : item.images[0].src
-                                }
-                                alt=""
-                              />
+                              <ProductImage src={item.images?.[0]?.src} alt={item.title} />
                             </Link>
                           </td>
                           <td>
                             <Link href={`/left-sidebar/product/` + item.id}>
                               {item.title}
                             </Link>
+                            {item.variantSize || item.selectedSize ? <div className="small text-muted">Size: {item.variantSize || item.selectedSize}</div> : null}
                             <div className="mobile-cart-content row">
                               <div className="col-xs-3">
                                 <div className="qty-box">

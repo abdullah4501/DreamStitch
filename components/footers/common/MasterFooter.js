@@ -269,7 +269,7 @@ const MasterFooter = ({
                           Premium Men's Wear
                         </li>
                         <li>
-                          <i className="fa fa-phone"></i>Call Us: +92 311-1294411
+                          <i className="fa fa-phone"></i>Call Us: +92 329-8386422
                         </li>
                         <li>
                           <i className="fa fa-envelope-o"></i>Email Us:{" "}

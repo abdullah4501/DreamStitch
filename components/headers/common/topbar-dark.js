@@ -1,13 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col } from "reactstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { clearAuth, isLoggedIn } from "../../../helpers/auth";
 
 const TopBarDark = ({ topClass, fluid }) => {
   const router = useRouter();
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const syncAuth = () => setLoggedIn(isLoggedIn());
+    syncAuth();
+    window.addEventListener("storage", syncAuth);
+    router.events.on("routeChangeComplete", syncAuth);
+
+    return () => {
+      window.removeEventListener("storage", syncAuth);
+      router.events.off("routeChangeComplete", syncAuth);
+    };
+  }, [router.events]);
+
   const Logout = () => {
-    localStorage.setItem("user", false);
-    router.push("/page/account/login-auth");
+    clearAuth();
+    setLoggedIn(false);
+    router.push("/page/account/login");
   };
   return (
     <div className={topClass}>
@@ -19,7 +35,7 @@ const TopBarDark = ({ topClass, fluid }) => {
                 <li>Welcome to Dream Stitch</li>
                 <li>
                   <i className="fa fa-phone text-white" aria-hidden="true"></i>
-                  Call Us: +92 311-1294411
+                  Call Us: +92 329-8386422
                 </li>
               </ul>
             </div>
@@ -36,23 +52,31 @@ const TopBarDark = ({ topClass, fluid }) => {
               <li className="onhover-dropdown mobile-account">
                 <i className="fa fa-user" aria-hidden="true"></i> My Account
                 <ul className="onhover-show-div">
-                  <li>
-                    <Link href={`/page/account/login`}>
-                      {/* <a> */}
-                      Login
-                      {/* </a> */}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href={`/page/account/register`}>
-                      {/* <a> */}
-                      Register
-                      {/* </a> */}
-                    </Link>
-                  </li>
-                  <li onClick={() => Logout()}>
-                    <a>Logout</a>
-                  </li>
+                  {loggedIn ? (
+                    <>
+                      <li>
+                        <Link href="/page/account/profile">
+                          <span style={{ fontWeight: 600 }}>Profile</span>
+                        </Link>
+                      </li>
+                      <li onClick={() => Logout()}>
+                        <a style={{ color: "#c0392b", cursor: "pointer", fontWeight: 600 }}>Logout</a>
+                      </li>
+                    </>
+                  ) : (
+                    <>
+                      <li>
+                        <Link href="/page/account/register">
+                          <span style={{ color: "#2f7d32", fontWeight: 600 }}>Register</span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/page/account/login">
+                          <span style={{ color: "#2f7d32", fontWeight: 600 }}>Login</span>
+                        </Link>
+                      </li>
+                    </>
+                  )}
                 </ul>
               </li>
             </ul>

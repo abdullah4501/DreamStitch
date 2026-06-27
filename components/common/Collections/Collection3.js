@@ -25,6 +25,7 @@ const GET_PRODUCTS = gql`
         stock
         sale
         discount
+        rating
         variants {
           id
           sku

@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import { gql } from "@apollo/client";
 import { Col } from "reactstrap";
 import DetailsWithPrice from "../common/detail-price";
+import ProductImage from "../../../components/common/ProductImage";
 
 const GET_SINGLE_PRODUCTS = gql`
   query product($id: Int!) {
@@ -17,6 +18,7 @@ const GET_SINGLE_PRODUCTS = gql`
       new
       sale
       discount
+      rating
       stock
       variants {
         id
@@ -59,11 +61,7 @@ const StickyPage = ({ pathId }) => {
                         <div>
                           {data?.product?.images?.map((img, index) => (
                             <div key={index}>
-                              <img
-                                src={img.src}
-                                alt=""
-                                className="img-fluid blur-up lazyload"
-                              />
+                              <ProductImage src={img.src} alt={data.product.title} className="img-fluid blur-up lazyload" />
                             </div>
                           ))}
                         </div>

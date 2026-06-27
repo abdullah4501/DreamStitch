@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Container, Row, Col, Media, Modal, ModalBody } from "reactstrap";
+import { Container, Row, Col, Modal, ModalBody } from "reactstrap";
 import { useQuery } from "@apollo/client";
 import { gql } from '@apollo/client';
 import { CurrencyContext } from "../../../helpers/Currency/CurrencyContext";
@@ -7,6 +7,7 @@ import CartContext from "../../../helpers/cart";
 import { WishlistContext } from "../../../helpers/wishlist/WishlistContext";
 import { CompareContext } from "../../../helpers/Compare/CompareContext";
 import { useRouter } from "next/router";
+import ProductImage from "../../../components/common/ProductImage";
 
 const GET_PRODUCTS = gql`
   query products($type: _CategoryType!, $indexFrom: Int!, $limit: Int!) {
@@ -23,8 +24,10 @@ const GET_PRODUCTS = gql`
         stock
         sale
         discount
+        rating
         variants {
           id
+          variant_id
           sku
           size
           color
@@ -58,6 +61,22 @@ const ProductSection = () => {
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
   const uniqueTags = [];
+
+  const renderRatingStars = (ratingValue) => {
+    const rating = Number(ratingValue) || 5;
+
+    return Array.from({ length: 5 }, (_, index) => {
+      const starValue = index + 1;
+      const className =
+        rating >= starValue
+          ? "fa fa-star"
+          : rating >= starValue - 0.5
+          ? "fa fa-star-half-o"
+          : "fa fa-star-o";
+
+      return <i className={className} key={index}></i>;
+    });
+  };
 
   const changeQty = (e) => {
     setQuantity(parseInt(e.target.value));
@@ -104,20 +123,20 @@ const ProductSection = () => {
                       <div className="img-wrapper">
                         <div className="front">
                           <a href={null}>
-                            <Media
+                            <ProductImage
                               onClick={() => clickProductDetail(product)}
-                              src={product.images[0].src}
+                              src={product.images[0]?.src}
                               className="img-fluid blur-up lazyload bg-img"
-                              alt=""
+                              alt={product.title}
                             />
                           </a>
                         </div>
                         <div className="back">
                           <a href={null}>
-                            <Media
-                              src={product.images[1].src}
+                            <ProductImage
+                              src={product.images[1]?.src}
                               className="img-fluid blur-up lazyload bg-img"
-                              alt=""
+                              alt={product.title}
                             />
                           </a>
                         </div>
@@ -156,13 +175,7 @@ const ProductSection = () => {
                         </div>
                       </div>
                       <div className="product-detail">
-                        <div className="rating">
-                          <i className="fa fa-star"></i>{" "}
-                          <i className="fa fa-star"></i>{" "}
-                          <i className="fa fa-star"></i>{" "}
-                          <i className="fa fa-star"></i>{" "}
-                          <i className="fa fa-star"></i>
-                        </div>
+                        <div className="rating">{renderRatingStars(product.rating)}</div>
                         <a href={null}>
                           <h6>{product.title}</h6>
                         </a>
@@ -188,9 +201,9 @@ const ProductSection = () => {
               <Row>
                 <Col lg="6" xs="12">
                   <div className="quick-view-img">
-                    <Media
-                      src={`${selectedProduct.images[0].src}`}
-                      alt=""
+                    <ProductImage
+                      src={selectedProduct.images[0]?.src}
+                      alt={selectedProduct.title}
                       className="img-fluid"
                     />
                   </div>

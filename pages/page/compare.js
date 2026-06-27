@@ -3,6 +3,7 @@ import CommonLayout from '../../components/shop/common-layout';
 import { Container, Row, Table, Media, Col } from 'reactstrap';
 import { CompareContext } from '../../helpers/Compare/CompareContext';
 import { CurrencyContext } from '../../helpers/Currency/CurrencyContext';
+import ProductImage from '../../components/common/ProductImage';
 
 const Compare = () => {
     const contextCompare = useContext(CompareContext);
@@ -41,7 +42,7 @@ const Compare = () => {
                                                 <tr>
                                                     <th className="product-name">Product Image</th>
                                                     {compareItem.map((item, i) =>
-                                                        <td className="item-row" key={i}><img src={item.images[0].src} alt=""
+                                                        <td className="item-row" key={i}><ProductImage src={item.images?.[0]?.src} alt={item.title}
                                                             className="featured-image" />
                                                             <div className="product-price product_price"><strong>On Sale:
                                                             </strong><span>{symbol}{item.price}</span></div>

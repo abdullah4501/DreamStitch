@@ -45,7 +45,7 @@ const ProductTab = () => {
                 </TabPane>
                 <TabPane tabId="3">
                   <p className="mb-0 pb-0">
-                    For the best fit, please provide your chest, waist, shoulder, and length measurements when placing a Made to Order. For ready-to-wear items, we follow standard Pakistani sizing (S, M, L, XL, XXL). If you're unsure of your size, contact us on WhatsApp at +92 311-1294411 and we'll help you find the right fit.
+                    For the best fit, please provide your chest, waist, shoulder, and length measurements when placing a Made to Order. For ready-to-wear items, we follow standard Pakistani sizing (S, M, L, XL, XXL). If you're unsure of your size, contact us on WhatsApp at +92 329-8386422 and we'll help you find the right fit.
                   </p>
                 </TabPane>
                 <TabPane tabId="4">

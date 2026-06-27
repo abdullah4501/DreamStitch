@@ -17,9 +17,26 @@ const DetailsWithPrice = ({ item, stickyClass, changeColorVar }) => {
   const stock = context.stock;
   const plusQty = context.plusQty;
   const minusQty = context.minusQty;
+  const setQuantity = context.setQuantity;
   const quantity = context.quantity;
   const uniqueColor = [];
   const uniqueSize = [];
+  const [selectedVariant, setSelectedVariant] = useState(product.variants?.[0] || null);
+  const discount = Number(product.discount) || 0;
+  const price = Number(product.price) || 0;
+  const finalPrice = Math.round(price - (price * discount) / 100);
+  const rating = Number(product.rating) || 5;
+  const ratingStars = Array.from({ length: 5 }, (_, index) => {
+    const starValue = index + 1;
+    const className =
+      rating >= starValue
+        ? "fa fa-star"
+        : rating >= starValue - 0.5
+        ? "fa fa-star-half-o"
+        : "fa fa-star-o";
+
+    return <i className={className} key={index}></i>;
+  });
 
   const changeQty = (e) => {
     setQuantity(parseInt(e.target.value));
@@ -29,16 +46,19 @@ const DetailsWithPrice = ({ item, stickyClass, changeColorVar }) => {
     <>
       <div className={`product-right ${stickyClass}`}>
         <h2> {product.title} </h2>
-        <h4>
-          <del>
-            {symbol}
-            {product.price}
-          </del>
-          <span>{product.discount}% off</span>
-        </h4>
+        <div className="rating">{ratingStars}</div>
+        {discount > 0 ? (
+          <h4>
+            <del>
+              {symbol}
+              {price}
+            </del>
+            <span>{discount}% off</span>
+          </h4>
+        ) : null}
         <h3>
           {symbol}
-          {product.price - (product.price * product.discount) / 100}
+          {finalPrice}
         </h3>
         {product.variants.map((vari) => {
           var findItemSize = uniqueSize.find((x) => x === vari.size);
@@ -66,9 +86,18 @@ const DetailsWithPrice = ({ item, stickyClass, changeColorVar }) => {
                   <div className="size-box">
                     <ul>
                       {uniqueSize.map((data, i) => {
+                        const variant = product.variants.find((item) => item.size === data);
                         return (
-                          <li key={i}>
-                            <a href={null}>{data}</a>
+                          <li key={i} className={selectedVariant?.size === data ? "active" : ""}>
+                            <a
+                              href={null}
+                              onClick={(event) => {
+                                event.preventDefault();
+                                setSelectedVariant(variant);
+                              }}
+                            >
+                              {data}
+                            </a>
                           </li>
                         );
                       })}
@@ -101,10 +130,21 @@ const DetailsWithPrice = ({ item, stickyClass, changeColorVar }) => {
           </div>
         </div>
         <div className="product-buttons">
-          <a href={null} className="btn btn-solid" onClick={() => context.addToCart(product, quantity)}>
+          <a
+            href={null}
+            className="btn btn-solid"
+            onClick={(event) => {
+              event.preventDefault();
+              context.addToCart({ ...product, selectedVariantId: selectedVariant?.variant_id, selectedSize: selectedVariant?.size }, quantity);
+            }}
+          >
             add to cart
           </a>
-          <Link href={`/page/account/checkout`} className="btn btn-solid" onClick={() => context.addToCart(product, quantity)}>
+          <Link
+            href={`/page/account/checkout`}
+            className="btn btn-solid"
+            onClick={() => context.addToCart({ ...product, selectedVariantId: selectedVariant?.variant_id, selectedSize: selectedVariant?.size }, quantity)}
+          >
             buy now
           </Link>
         </div>

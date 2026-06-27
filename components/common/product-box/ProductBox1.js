@@ -5,6 +5,7 @@ import { Row, Col, Media, Modal, ModalBody, ModalHeader } from "reactstrap";
 import CartContext from "../../../helpers/cart";
 import { CurrencyContext } from "../../../helpers/Currency/CurrencyContext";
 import MasterProductDetail from "./MasterProductDetail";
+import ProductImage from "../ProductImage";
 
 const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass, productDetail, addCompare, title }) => {
   // eslint-disable-next-line
@@ -20,10 +21,13 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
   const [image, setImage] = useState("");
   const [modal, setModal] = useState(false);
   const [modalCompare, setModalCompare] = useState(false);
+  const [actionLoading, setActionLoading] = useState("");
   const toggleCompare = () => setModalCompare(!modalCompare);
   const toggle = () => setModal(!modal);
 
-  const onClickHandle = (img) => {
+  const onClickHandle = (event, img) => {
+    event.preventDefault();
+    event.stopPropagation();
     setImage(img);
   };
 
@@ -35,22 +39,48 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
     const titleProps = product.title.split(" ").join("");
     router.push(`/product-details/${product.id}` + "-" + `${titleProps}`);
   };
+
+  const runCardAction = async (event, actionName, action) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!action || actionLoading) return;
+
+    setActionLoading(actionName);
+    try {
+      await action();
+    } finally {
+      setTimeout(() => setActionLoading(""), 250);
+    }
+  };
+
   return (
-    <div className="product-box product-wrap">
+    <div className={`product-box product-wrap ${actionLoading ? "product-card-busy" : ""}`} onClick={clickProductDetail} role="button" tabIndex={0}>
+      {actionLoading ? (
+        <div className="product-card-action-loader">
+          <span className="loader-ring"></span>
+          <strong>
+            {actionLoading === "cart"
+              ? "Adding to cart"
+              : actionLoading === "wishlist"
+              ? "Saving item"
+              : "Updating"}
+          </strong>
+        </div>
+      ) : null}
       <div className="img-wrapper">
         <div className="lable-block">
           {product.new === true ? <span className="lable3">new</span> : ""}
           {product.sale === true ? <span className="lable4">on sale</span> : ""}
         </div>
-        <div className="front" onClick={clickProductDetail}>
-          <Media src={`${image ? image : product.images[0].src}`} className="img-fluid" alt="" />
+        <div className="front">
+          <ProductImage src={image ? image : product.images[0]?.src} className="img-fluid" alt={product.title} />
         </div>
         {backImage ? (
           product.images[1] === "undefined" ? (
             "false"
           ) : (
-            <div className="back" onClick={clickProductDetail}>
-              <Media src={`${image ? image : product.images[1].src}`} className="img-fluid m-auto" alt="" />
+            <div className="back">
+              <ProductImage src={image ? image : product.images[1]?.src} className="img-fluid m-auto" alt={product.title} />
             </div>
           )
         ) : (
@@ -58,24 +88,24 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
         )}
 
         <div className={cartClass}>
-          <button title="Add to cart" onClick={addCart}>
-            <i className="fa fa-shopping-cart" aria-hidden="true"></i>
+          <button title="Add to cart" onClick={(event) => runCardAction(event, "cart", addCart)} disabled={actionLoading === "cart"}>
+            <i className={`fa ${actionLoading === "cart" ? "fa-spinner fa-spin" : "fa-shopping-cart"}`} aria-hidden="true"></i>
           </button>
-          <a href={null} title="Add to Wishlist" onClick={addWishlist}>
-            <i className="fa fa-heart" aria-hidden="true"></i>
+          <a href={null} title="Add to Wishlist" onClick={(event) => runCardAction(event, "wishlist", addWishlist)}>
+            <i className={`fa ${actionLoading === "wishlist" ? "fa-spinner fa-spin" : "fa-heart"}`} aria-hidden="true"></i>
           </a>
-          <a href={null} title="Quick View" onClick={toggle}>
+          <a href={null} title="Quick View" onClick={(event) => { event.preventDefault(); event.stopPropagation(); toggle(); }}>
             <i className="fa fa-search" aria-hidden="true"></i>
           </a>
-          <a href={null} title="Compare" onClick={toggleCompare}>
-            <i className="fa fa-refresh" aria-hidden="true"></i>
+          <a href={null} title="Compare" onClick={(event) => runCardAction(event, "compare", () => { toggleCompare(); return addCompare && addCompare(); })}>
+            <i className={`fa ${actionLoading === "compare" ? "fa-spinner fa-spin" : "fa-refresh"}`} aria-hidden="true"></i>
           </a>
           <Modal isOpen={modalCompare} toggle={toggleCompare} size="lg" centered>
-            <ModalBody>
+            <ModalBody onClick={(event) => event.stopPropagation()}>
               <Row className="compare-modal">
                 <Col lg="12">
                   <div className="media">
-                    <Media src={`${product.variants && image ? image : product.images[0].src}`} alt="" className="img-fluid" />
+                    <ProductImage src={product.variants && image ? image : product.images[0]?.src} alt={product.title} className="img-fluid" />
                     <div className="media-body align-self-center text-center">
                       <h5>
                         <i className="fa fa-check"></i>Item <span>{product.title} </span>
@@ -83,7 +113,7 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
                       </h5>
                       <div className="buttons d-flex justify-content-center">
                         <Link href="/page/compare">
-                          <button className="btn-sm btn-solid" onClick={addCompare}>
+                          <button className="btn-sm btn-solid" onClick={(event) => { event.stopPropagation(); }}>
                             View Compare list
                           </button>
                         </Link>
@@ -100,7 +130,7 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
             {product.images.map((img, i) => (
               <li className={`grid_thumb_img ${img.src === image ? "active" : ""}`} key={i}>
                 <a href={null} title="Add to Wishlist">
-                  <Media src={`${img.src}`} alt="wishlist" onClick={() => onClickHandle(img.src)} />
+                  <ProductImage src={img.src} alt={product.title} onClick={(event) => onClickHandle(event, img.src)} />
                 </a>
               </li>
             ))}
@@ -111,11 +141,11 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
       </div>
       <MasterProductDetail product={product} productDetail={productDetail} currency={currency} title={title} des={des} />
       <Modal isOpen={modal} toggle={toggle} className="modal-lg quickview-modal" centered>
-        <ModalBody>
+        <ModalBody onClick={(event) => event.stopPropagation()}>
           <Row>
             <Col lg="6" xs="12">
               <div className="quick-view-img">
-                <Media src={`${product.variants && image ? image : product.images[0].src}`} alt="" className="img-fluid" />
+                <ProductImage src={product.variants && image ? image : product.images[0]?.src} alt={product.title} className="img-fluid" />
               </div>
             </Col>
             <Col lg="6" className="rtl-text">
@@ -167,7 +197,7 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
                   <button className="btn btn-solid" onClick={() => addCart(product)}>
                     add to cart
                   </button>
-                  <button className="btn btn-solid" onClick={clickProductDetail}>
+                  <button className="btn btn-solid" onClick={(event) => { event.stopPropagation(); clickProductDetail(); }}>
                     View detail
                   </button>
                 </div>

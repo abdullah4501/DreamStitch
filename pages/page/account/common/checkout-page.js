@@ -1,13 +1,52 @@
-import React, { useContext, useState } from "react";
-import { Media, Container, Form, Row, Col } from "reactstrap";
-import CartContext from "../../../../helpers/cart";
-import paypal from "../../../../public/assets/images/paypal.png";
-// import { PayPalButton } from "react-paypal-button-v2";
-import { PayPalScriptProvider, BraintreePayPalButtons, PayPalButtons } from "@paypal/react-paypal-js";
-
+import React, { useContext, useEffect, useState } from "react";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { Container, Form, Row, Col } from "reactstrap";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
+import CartContext from "../../../../helpers/cart";
 import { CurrencyContext } from "../../../../helpers/Currency/CurrencyContext";
+import { isLoggedIn } from "../../../../helpers/auth";
+
+const ME = gql`
+  query CheckoutMe {
+    me {
+      firstName
+      lastName
+      email
+      phone
+      addresses {
+        fullName
+        phone
+        address1
+        address2
+        city
+        province
+        postalCode
+        country
+        isDefault
+      }
+    }
+  }
+`;
+
+const CREATE_ORDER = gql`
+  mutation CreateOrder($input: CheckoutInput!) {
+    createOrder(input: $input) {
+      id
+      orderNumber
+      total
+      status
+    }
+  }
+`;
+
+const SAVE_DEFAULT_ADDRESS = gql`
+  mutation SaveDefaultAddress($input: AddressInput!) {
+    saveDefaultAddress(input: $input) {
+      id
+    }
+  }
+`;
 
 const CheckoutPage = () => {
   const cartContext = useContext(CartContext);
@@ -15,37 +54,90 @@ const CheckoutPage = () => {
   const cartTotal = cartContext.cartTotal;
   const curContext = useContext(CurrencyContext);
   const symbol = curContext.state.symbol;
-  const [obj, setObj] = useState({});
   const [payment, setPayment] = useState("cod");
+  const [saveAddress, setSaveAddress] = useState(false);
+  const router = useRouter();
+  const loggedIn = isLoggedIn();
+  const { data: meData } = useQuery(ME, { skip: !loggedIn, fetchPolicy: "network-only" });
+  const [createOrder, { loading: placingOrder }] = useMutation(CREATE_ORDER);
+  const [saveDefaultAddress] = useMutation(SAVE_DEFAULT_ADDRESS);
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
-  } = useForm(); // initialise the hook
-  const router = useRouter();
+  } = useForm();
 
-  const checkhandle = (value) => {
-    setPayment(value);
-  };
+  useEffect(() => {
+    const user = meData?.me;
+    if (!user) return;
+    const defaultAddress = user.addresses?.find((address) => address.isDefault) || user.addresses?.[0];
 
-  const onSubmit = (data) => {
-    if (data !== "") {
-      alert("You submitted the form and stuff!");
+    setValue("first_name", user.firstName || "");
+    setValue("last_name", user.lastName || "");
+    setValue("phone", defaultAddress?.phone || user.phone || "");
+    setValue("email", user.email || "");
+    setValue("country", defaultAddress?.country || "Pakistan");
+    setValue("address", defaultAddress?.address1 || "");
+    setValue("address2", defaultAddress?.address2 || "");
+    setValue("city", defaultAddress?.city || "");
+    setValue("state", defaultAddress?.province || "");
+    setValue("pincode", defaultAddress?.postalCode || "");
+  }, [meData, setValue]);
+
+  const onSubmit = async (data) => {
+    if (!cartItems.length) return;
+
+    const addressInput = {
+      fullName: `${data.first_name} ${data.last_name}`.trim(),
+      phone: data.phone,
+      address1: data.address,
+      address2: data.address2 || null,
+      city: data.city,
+      province: data.state || null,
+      postalCode: data.pincode || null,
+      country: data.country || "Pakistan",
+      isDefault: true,
+    };
+
+    try {
+      if (saveAddress && loggedIn) {
+        await saveDefaultAddress({ variables: { input: addressInput } });
+      }
+
+      const { data: orderData } = await createOrder({
+        variables: {
+          input: {
+            customerName: addressInput.fullName,
+            email: data.email || null,
+            phone: data.phone,
+            address1: data.address,
+            address2: data.address2 || null,
+            city: data.city,
+            province: data.state || null,
+            postalCode: data.pincode || null,
+            country: data.country || "Pakistan",
+            paymentMethod: payment,
+            notes: data.notes || null,
+            items: cartItems.map((item) => ({
+              productId: Number(item.id),
+              variantId: item.variantId || null,
+              quantity: Number(item.qty) || 1,
+            })),
+          },
+        },
+      });
+
+      await cartContext.clearCart();
       router.push({
         pathname: "/page/order-success",
-        state: { items: cartItems, orderTotal: cartTotal, symbol: symbol },
+        query: { order: orderData.createOrder.orderNumber },
       });
-    } else {
-      errors.showMessages();
+    } catch (error) {
+      alert(error.message || "Unable to place order.");
     }
   };
 
-  const setStateFromInput = (event) => {
-    obj[event.target.name] = event.target.value;
-    setObj(obj);
-  };
-
-  console.log("cartItems", cartItems);
   return (
     <section className="section-b-space">
       <Container>
@@ -60,97 +152,66 @@ const CheckoutPage = () => {
                   <div className="row check-out">
                     <div className="form-group col-md-6 col-sm-6 col-xs-12">
                       <div className="field-label">First Name</div>
-                      <input type="text" className={`${errors.firstName ? "error_border" : ""}`} name="first_name" {...register("first_name", { required: true })} />
-                      <span className="error-message">{errors.firstName && "First name is required"}</span>
+                      <input type="text" className={`${errors.first_name ? "error_border" : ""}`} {...register("first_name", { required: true })} />
+                      <span className="error-message">{errors.first_name && "First name is required"}</span>
                     </div>
                     <div className="form-group col-md-6 col-sm-6 col-xs-12">
                       <div className="field-label">Last Name</div>
-                      <input type="text" className={`${errors.last_name ? "error_border" : ""}`} name="last_name" {...register("last_name", { required: true })} />
+                      <input type="text" className={`${errors.last_name ? "error_border" : ""}`} {...register("last_name", { required: true })} />
                       <span className="error-message">{errors.last_name && "Last name is required"}</span>
                     </div>
                     <div className="form-group col-md-6 col-sm-6 col-xs-12">
                       <div className="field-label">Phone</div>
-                      <input type="text" name="phone" className={`${errors.phone ? "error_border" : ""}`} {...register("phone", { pattern: /\d+/ })} />
-                      <span className="error-message">{errors.phone && "Please enter number for phone."}</span>
+                      <input type="text" className={`${errors.phone ? "error_border" : ""}`} {...register("phone", { required: true })} />
+                      <span className="error-message">{errors.phone && "Phone is required."}</span>
                     </div>
                     <div className="form-group col-md-6 col-sm-6 col-xs-12">
                       <div className="field-label">Email Address</div>
-                      <input
-                        //className="form-control"
-                        className={`${errors.email ? "error_border" : ""}`}
-                        type="text"
-                        name="email"
-                        {...register("email", {
-                          required: true,
-                          pattern: /^\S+@\S+$/i,
-                        })}
-                      />
-                      <span className="error-message">{errors.email && "Please enter proper email address ."}</span>
+                      <input className={`${errors.email ? "error_border" : ""}`} type="email" {...register("email", { pattern: /^\S+@\S+$/i })} />
+                      <span className="error-message">{errors.email && "Please enter proper email address."}</span>
                     </div>
                     <div className="form-group col-md-12 col-sm-12 col-xs-12">
                       <div className="field-label">Country</div>
-                      <select name="country" {...register("country", { required: true })}>
-                        <option>India</option>
-                        <option>South Africa</option>
-                        <option>United State</option>
-                        <option>Australia</option>
+                      <select {...register("country", { required: true })}>
+                        <option>Pakistan</option>
                       </select>
                     </div>
                     <div className="form-group col-md-12 col-sm-12 col-xs-12">
                       <div className="field-label">Address</div>
-                      <input
-                        //className="form-control"
-                        className={`${errors.address ? "error_border" : ""}`}
-                        type="text"
-                        name="address"
-                        {...register("address", { required: true, min: 20, max: 120 })}
-                        placeholder="Street address"
-                      />
-                      <span className="error-message">{errors.address && "Please right your address ."}</span>
+                      <input className={`${errors.address ? "error_border" : ""}`} type="text" {...register("address", { required: true })} placeholder="Street address" />
+                      <span className="error-message">{errors.address && "Address is required."}</span>
+                    </div>
+                    <div className="form-group col-md-12 col-sm-12 col-xs-12">
+                      <div className="field-label">Address 2</div>
+                      <input type="text" {...register("address2")} placeholder="Apartment, suite, landmark" />
                     </div>
                     <div className="form-group col-md-12 col-sm-12 col-xs-12">
                       <div className="field-label">Town/City</div>
-                      <input
-                        //className="form-control"
-                        type="text"
-                        className={`${errors.city ? "error_border" : ""}`}
-                        name="city"
-                        {...register("city", { required: true })}
-                        onChange={setStateFromInput}
-                      />
-                      <span className="error-message">{errors.city && "select one city"}</span>
+                      <input type="text" className={`${errors.city ? "error_border" : ""}`} {...register("city", { required: true })} />
+                      <span className="error-message">{errors.city && "City is required."}</span>
                     </div>
                     <div className="form-group col-md-12 col-sm-6 col-xs-12">
-                      <div className="field-label">State / County</div>
-                      <input
-                        //className="form-control"
-                        type="text"
-                        className={`${errors.state ? "error_border" : ""}`}
-                        name="state"
-                        {...register("state", { required: true })}
-                        onChange={setStateFromInput}
-                      />
-                      <span className="error-message">{errors.state && "select one state"}</span>
+                      <div className="field-label">Province</div>
+                      <input type="text" {...register("state")} />
                     </div>
                     <div className="form-group col-md-12 col-sm-6 col-xs-12">
                       <div className="field-label">Postal Code</div>
-                      <input
-                        //className="form-control"
-                        type="text"
-                        name="pincode"
-                        className={`${errors.pincode ? "error_border" : ""}`}
-                        {...register("pincode", { pattern: /\d+/ })}
-                      />
-                      <span className="error-message">{errors.pincode && "Required integer"}</span>
+                      <input type="text" {...register("pincode")} />
                     </div>
-                    <div className="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                      <input type="checkbox" name="create_account" id="account-option" />
-                      &ensp; <label htmlFor="account-option">Create An Account?</label>
+                    <div className="form-group col-md-12 col-sm-12 col-xs-12">
+                      <div className="field-label">Order Notes</div>
+                      <textarea className="form-control" rows="3" {...register("notes")} placeholder="Any delivery or fitting notes"></textarea>
                     </div>
+                    {loggedIn ? (
+                      <div className="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <input type="checkbox" id="save-address" checked={saveAddress} onChange={(event) => setSaveAddress(event.target.checked)} />
+                        &ensp; <label htmlFor="save-address">Save this address to my account and replace my old default address</label>
+                      </div>
+                    ) : null}
                   </div>
                 </Col>
                 <Col lg="6" sm="12" xs="12">
-                  {cartItems && cartItems.length > 0 > 0 ? (
+                  {cartItems && cartItems.length > 0 ? (
                     <div className="checkout-details">
                       <div className="order-box">
                         <div className="title-box">
@@ -159,9 +220,10 @@ const CheckoutPage = () => {
                           </div>
                         </div>
                         <ul className="qty">
-                          {cartItems.map((item, index) => (
-                            <li key={index}>
-                              {item.title} × {item.qty}{" "}
+                          {cartItems.map((item) => (
+                            <li key={item.cartItemId || item.id}>
+                              {item.title} x {item.qty}
+                              {item.variantSize || item.selectedSize ? <small className="d-block">Size: {item.variantSize || item.selectedSize}</small> : null}
                               <span>
                                 {symbol}
                                 {item.total}
@@ -171,7 +233,7 @@ const CheckoutPage = () => {
                         </ul>
                         <ul className="sub-total">
                           <li>
-                            Subtotal{" "}
+                            Subtotal
                             <span className="count">
                               {symbol}
                               {cartTotal}
@@ -181,19 +243,15 @@ const CheckoutPage = () => {
                             Shipping
                             <div className="shipping">
                               <div className="shopping-option">
-                                <input type="checkbox" name="free-shipping" id="free-shipping" />
-                                <label htmlFor="free-shipping">Free Shipping</label>
-                              </div>
-                              <div className="shopping-option">
-                                <input type="checkbox" name="local-pickup" id="local-pickup" />
-                                <label htmlFor="local-pickup">Local Pickup</label>
+                                <input type="checkbox" id="free-shipping" checked readOnly />
+                                <label htmlFor="free-shipping">Confirm with team</label>
                               </div>
                             </div>
                           </li>
                         </ul>
                         <ul className="total">
                           <li>
-                            Total{" "}
+                            Total
                             <span className="count">
                               {symbol}
                               {cartTotal}
@@ -207,19 +265,14 @@ const CheckoutPage = () => {
                             <ul>
                               <li>
                                 <div className="radio-option stripe">
-                                  <input type="radio" name="payment-group" id="payment-2" defaultChecked={true} onClick={() => checkhandle("cod")} />
-                                  <label htmlFor="payment-2">COD</label>
+                                  <input type="radio" name="payment-group" id="payment-cod" defaultChecked onClick={() => setPayment("cod")} />
+                                  <label htmlFor="payment-cod">Cash on Delivery / Confirm by Phone</label>
                                 </div>
                               </li>
                               <li>
-                                <div className="radio-option paypal">
-                                  <input type="radio" name="payment-group" id="payment-1" onClick={() => checkhandle("paypal")} />
-                                  <label htmlFor="payment-1">
-                                    PayPal
-                                    <span className="image">
-                                      <Media src={paypal.src} alt="" />
-                                    </span>
-                                  </label>
+                                <div className="radio-option stripe">
+                                  <input type="radio" name="payment-group" id="payment-bank" onClick={() => setPayment("bank-transfer")} />
+                                  <label htmlFor="payment-bank">Bank Transfer After Confirmation</label>
                                 </div>
                               </li>
                             </ul>
@@ -227,42 +280,14 @@ const CheckoutPage = () => {
                         </div>
                         {cartTotal !== 0 ? (
                           <div className="text-end">
-                            {payment === "cod" ? (
-                              <button type="submit" className="btn-solid btn">
-                                Place Order
-                              </button>
-                            ) : (
-                              <PayPalScriptProvider options={{ clientId: "test" }}>
-                                <PayPalButtons
-                                  createOrder={(data, actions) => {
-                                    return actions.order.create({
-                                      purchase_units: [
-                                        {
-                                          amount: {
-                                            value: "1.99",
-                                          },
-                                        },
-                                      ],
-                                    });
-                                  }}
-                                  onApprove={(data, actions) => {
-                                    return actions.order.capture().then((details) => {
-                                      const name = details.payer.name.given_name;
-                                      alert(`Transaction completed by ${name}`);
-                                    });
-                                  }}
-                                />
-                              </PayPalScriptProvider>
-                            )}
+                            <button type="submit" className="btn-solid btn" disabled={placingOrder}>
+                              {placingOrder ? "Placing Order..." : "Place Order"}
+                            </button>
                           </div>
-                        ) : (
-                          ""
-                        )}
+                        ) : null}
                       </div>
                     </div>
-                  ) : (
-                    ""
-                  )}
+                  ) : null}
                 </Col>
               </Row>
             </Form>
