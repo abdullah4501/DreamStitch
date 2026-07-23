@@ -1,16 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CommonLayout from '../../../components/shop/common-layout';
 import { Container, Row ,Col} from 'reactstrap';
 
 const Dashboard = () => {
     const [accountInfo,setAccountInfo] = useState(false)
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const updateViewport = () => setIsMobile(window.innerWidth <= 991);
+        updateViewport();
+        window.addEventListener("resize", updateViewport, { passive: true });
+        return () => window.removeEventListener("resize", updateViewport);
+    }, []);
     return (
         <CommonLayout parent="home" title="dashboard">
             <section className="section-b-space">
                 <Container>
                     <Row>
                         <Col lg="3">
-                            {window.innerWidth <= 991 ?
+                            {isMobile ?
                             <div className="account-sidebar" onClick={() => setAccountInfo(!accountInfo)}><a className="popup-btn">my account</a></div>
                             :""}
                             <div className="dashboard-left" style={accountInfo ? {left:"0px"} : {}}> 

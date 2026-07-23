@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Link from "next/link";
 import sizeChart from "../../../public/assets/images/size-chart.jpg";
 import { Modal, ModalBody, ModalHeader, Media, Input } from "reactstrap";
@@ -19,9 +19,18 @@ const DetailsWithPrice = ({ item, stickyClass, changeColorVar }) => {
   const minusQty = context.minusQty;
   const setQuantity = context.setQuantity;
   const quantity = context.quantity;
+  const variants = Array.isArray(product?.variants) ? product.variants : [];
   const uniqueColor = [];
   const uniqueSize = [];
-  const [selectedVariant, setSelectedVariant] = useState(product.variants?.[0] || null);
+  const [selectedVariant, setSelectedVariant] = useState(variants[0] || null);
+
+  useEffect(() => {
+    const nextVariants = Array.isArray(item?.variants) ? item.variants : [];
+    setSelectedVariant(nextVariants[0] || null);
+  }, [item]);
+
+  if (!item) return null;
+
   const discount = Number(product.discount) || 0;
   const price = Number(product.price) || 0;
   const finalPrice = Math.round(price - (price * discount) / 100);
@@ -60,12 +69,12 @@ const DetailsWithPrice = ({ item, stickyClass, changeColorVar }) => {
           {symbol}
           {finalPrice}
         </h3>
-        {product.variants.map((vari) => {
+        {variants.map((vari) => {
           var findItemSize = uniqueSize.find((x) => x === vari.size);
           if (!findItemSize) uniqueSize.push(vari.size);
         })}
         <div className="product-description border-product">
-          {product.variants ? (
+          {variants.length ? (
             <div>
               {uniqueSize.some((size) => size) ? (
                 <>
@@ -86,7 +95,7 @@ const DetailsWithPrice = ({ item, stickyClass, changeColorVar }) => {
                   <div className="size-box">
                     <ul>
                       {uniqueSize.map((data, i) => {
-                        const variant = product.variants.find((item) => item.size === data);
+                        const variant = variants.find((item) => item.size === data);
                         return (
                           <li key={i} className={selectedVariant?.size === data ? "active" : ""}>
                             <a
