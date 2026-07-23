@@ -95,32 +95,32 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
     },
   });
 
-  const handlePagination = () => {
+  const handlePagination = async () => {
+    if (isLoading || !data?.products?.hasMore) return;
     setIsLoading(true);
-    setTimeout(
-      () =>
-        fetchMore({
-          variables: {
-            indexFrom: data.products.items.length,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) return prev;
-            setIsLoading(false);
-            return {
-              products: {
-                __typename: prev.products.__typename,
-                total: prev.products.total,
-                items: [
-                  ...prev.products.items,
-                  ...fetchMoreResult.products.items,
-                ],
-                hasMore: fetchMoreResult.products.hasMore,
-              },
-            };
-          },
-        }),
-      1000
-    );
+    try {
+      await fetchMore({
+        variables: {
+          indexFrom: data.products.items.length,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prev;
+          return {
+            products: {
+              __typename: prev.products.__typename,
+              total: prev.products.total,
+              items: [
+                ...prev.products.items,
+                ...fetchMoreResult.products.items,
+              ],
+              hasMore: fetchMoreResult.products.hasMore,
+            },
+          };
+        },
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const removeBrand = (val) => {
@@ -326,6 +326,8 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
                               src={`/assets/images/empty-search.jpg`}
                               className="img-fluid mb-4 mx-auto"
                               alt=""
+                              loading="lazy"
+                              decoding="async"
                             />
                             <h3>
                               <strong>No products found</strong>
@@ -383,7 +385,7 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
                   <Row>
                     <Col xl="12" md="12" sm="12">
                       {data && data.products && data.products.hasMore && (
-                        <Button className="load-more" onClick={() => handlePagination()}>
+                        <Button className="load-more" onClick={handlePagination} disabled={isLoading}>
                           {isLoading && (
                             <Spinner animation="border" variant="light" />
                           )}

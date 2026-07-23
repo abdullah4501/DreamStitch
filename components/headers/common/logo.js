@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import Link from "next/link";
 
-const LogoImage = ({ logo }) => {
+const LogoImage = ({ logo, loading = "eager" }) => {
   return (
     <Fragment>
       <Link href={"/"}>
@@ -9,6 +9,9 @@ const LogoImage = ({ logo }) => {
           src={`/assets/images/icon/logo-2.png`}
           alt="Dream Stitch"
           className="img-fluid"
+          loading={loading}
+          decoding="async"
+          fetchPriority={loading === "eager" ? "high" : "auto"}
           style={{ maxHeight: "80px" }}
         />
       </Link>

@@ -9,13 +9,13 @@ import ServiceLayout from "../components/common/Service/service1";
 import HeaderOne from "../components/headers/header-one";
 import { Product4 } from "../services/script";
 import Paragraph from "../components/common/Paragraph";
-import Helmet from "react-helmet";
+import Head from "next/head";
 import MasterFooter from "../components/footers/common/MasterFooter";
 
 const Fashion = () => {
   return (
     <>
-      <Helmet>
+      <Head>
         <title>Dream Stitch | Men's Wear</title>
         <meta
           name="description"
@@ -23,7 +23,7 @@ const Fashion = () => {
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/x-icon" href={"/assets/images/favicon/1.png"} />
-      </Helmet>
+      </Head>
       <HeaderOne logoName={"logo.jpeg"} topClass="top-header" />
       <Banner />
       <CollectionBanner />

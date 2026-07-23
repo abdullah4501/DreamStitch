@@ -82,7 +82,7 @@ const Compare = () => {
                                             <Col sm="12">
                                                 <div >
                                                     <Col sm="12" className="empty-cart-cls text-center">
-                                                        <Media src={`/assets/images/icon-empty-cart.png`} className="img-fluid mb-4 mx-auto" alt="" />
+                                                        <Media src={`/assets/images/icon-empty-cart.png`} className="img-fluid mb-4 mx-auto" alt="" loading="lazy" decoding="async" />
                                                         <h3>
                                                             <strong>Your Cart is Empty</strong>
                                                         </h3>

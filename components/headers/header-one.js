@@ -7,38 +7,40 @@ import { Media, Container, Row, Col } from "reactstrap";
 import LogoImage from "./common/logo";
 import search from "../../public/assets/images/icon/search.png";
 import cart from "../../public/assets/images/icon/cart.png";
-import { useRouter } from "next/router";
 import SearchOverlay from "./common/search-overlay";
 
 const HeaderOne = ({ logoName, headerClass, topClass, noTopBar, direction }) => {
-  const router = useRouter();
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    setTimeout(function () {
-      document.querySelectorAll(".loader-wrapper").style = "display:none";
-    }, 2000);
+    const header = document.getElementById("sticky");
+    let animationFrame = 0;
+    let isFixed = false;
 
-    if (router.asPath !== "/layouts/Christmas")
-      window.addEventListener("scroll", handleScroll);
+    const updateHeader = () => {
+      const shouldFix = window.scrollY >= 300 && window.innerWidth >= 581;
+      if (shouldFix !== isFixed) {
+        header?.classList.toggle("fixed", shouldFix);
+        isFixed = shouldFix;
+      }
+      animationFrame = 0;
+    };
+    const scheduleUpdate = () => {
+      if (!animationFrame) {
+        animationFrame = window.requestAnimationFrame(updateHeader);
+      }
+    };
+
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate, { passive: true });
+    updateHeader();
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      if (animationFrame) window.cancelAnimationFrame(animationFrame);
     };
   }, []);
-
-  const handleScroll = () => {
-    let number =
-      window.pageXOffset ||
-      document.documentElement.scrollTop ||
-      document.body.scrollTop ||
-      0;
-    if (number >= 300) {
-      if (window.innerWidth < 581)
-        document.getElementById("sticky").classList.remove("fixed");
-      else document.getElementById("sticky").classList.add("fixed");
-    } else document.getElementById("sticky").classList.remove("fixed");
-  };
 
   const openSearch = () => {
     document.getElementById("search-overlay").style.display = "block";

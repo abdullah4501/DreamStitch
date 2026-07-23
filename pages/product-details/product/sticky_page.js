@@ -61,7 +61,7 @@ const StickyPage = ({ pathId }) => {
                         <div>
                           {data?.product?.images?.map((img, index) => (
                             <div key={index}>
-                              <ProductImage src={img.src} alt={data.product.title} className="img-fluid blur-up lazyload" />
+                              <ProductImage src={img.src} alt={data.product.title} className="img-fluid blur-up lazyload" loading={index === 0 ? "eager" : "lazy"} fetchPriority={index === 0 ? "high" : "auto"} />
                             </div>
                           ))}
                         </div>

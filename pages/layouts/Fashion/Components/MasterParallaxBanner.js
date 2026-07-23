@@ -13,7 +13,7 @@ const MasterParallaxBanner = ({
   return (
     <Fragment>
       <section className={`p-0 ${parallaxSectionClass}`}>
-        <div className={`full-banner dream-stitch-parallax ${bg} parallax ${parallaxClass}`}>
+        <div className={`full-banner dream-stitch-parallax ${bg} ${parallaxClass}`}>
           <Container>
             <Row>
               <Col lg="7" md="9">

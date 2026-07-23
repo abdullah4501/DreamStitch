@@ -52,7 +52,7 @@ const AboutUs = () => {
             <Row>
               <Col lg="12">
                 <div className="banner-section">
-                  <Media src={aboutus.src} className="img-fluid blur-up lazyload" alt="About Dream Stitch" />
+                  <Media src={aboutus.src} className="img-fluid blur-up lazyload" alt="About Dream Stitch" loading="lazy" decoding="async" />
                 </div>
               </Col>
               <Col sm="12">

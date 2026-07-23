@@ -127,7 +127,7 @@ const MadeToOrder = () => {
               <Col xl="4" md="6" key={fabric.id}>
                 <button type="button" className="fabric-card rounded-4" onClick={() => openFabric(fabric)}>
                   <span className="fabric-image">
-                    <Media src={fabric.images?.[0]?.src} alt={fabric.name} className=""/>
+                    <Media src={fabric.images?.[0]?.src} alt={fabric.name} className="" loading="lazy" decoding="async" />
                   </span>
                   <span className="fabric-content">
                     <strong>{fabric.name}</strong>
@@ -179,7 +179,7 @@ const MadeToOrder = () => {
                   <li>Design, embroidery, and delivery discussion</li>
                 </ul>
                 <button type="button" className="made-order-size-chart" onClick={() => openFabric(sizeChart)}>
-                  <Media src={sizeChart.image} alt="Dream Stitch size chart" />
+                  <Media src={sizeChart.image} alt="Dream Stitch size chart" loading="lazy" decoding="async" />
                   <span>
                     <strong>Size Chart</strong>
                     <small>Click to view measurement guide</small>
@@ -221,7 +221,7 @@ const MadeToOrder = () => {
                   <Col md="5">
                     <Label className="form-label">Selected Fabric</Label>
                     <button type="button" className="selected-fabric-preview" onClick={() => selectedFabric && openFabric(selectedFabric)}>
-                      <Media src={selectedFabricImage} alt={selectedFabric?.name || "Selected fabric"} />
+                      <Media src={selectedFabricImage} alt={selectedFabric?.name || "Selected fabric"} loading="lazy" decoding="async" />
                       <span>{selectedFabric?.name || "Select fabric"}</span>
                     </button>
                   </Col>
@@ -309,7 +309,7 @@ const MadeToOrder = () => {
           {previewFabric ? (
             <>
               <button type="button" className="btn-close" aria-label="Close" onClick={closeFabric}></button>
-              <Media src={previewFabric.image || previewFabric.images?.[0]?.src} alt={previewFabric.name} />
+              <Media src={previewFabric.image || previewFabric.images?.[0]?.src} alt={previewFabric.name} loading="lazy" decoding="async" />
             </>
           ) : null}
         </ModalBody>

@@ -4,16 +4,25 @@ const TapTop = () => {
   const [goingUp, setGoingUp] = useState(false);
 
   useEffect(() => {
-    // Tap to Top Scroll
+    let animationFrame = 0;
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > 500) setGoingUp(true);
-      else setGoingUp(false);
+      if (animationFrame) return;
+      animationFrame = window.requestAnimationFrame(() => {
+        const shouldShow = window.scrollY > 500;
+        setGoingUp((current) =>
+          current === shouldShow ? current : shouldShow
+        );
+        animationFrame = 0;
+      });
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
 
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [goingUp]);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (animationFrame) window.cancelAnimationFrame(animationFrame);
+    };
+  }, []);
 
   const tapToTop = () => {
     window.scrollTo({

@@ -27,19 +27,30 @@ const MasterFooter = ({
 }) => {
   const [isOpen, setIsOpen] = useState();
   const [collapse, setCollapse] = useState(0);
-  const width = window.innerWidth <= 767;
+  const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
+    let animationFrame = 0;
     const changeCollapse = () => {
-      if (window.innerWidth <= 767) {
-        setCollapse(0);
-        setIsOpen(false);
-      } else setIsOpen(true);
+      if (animationFrame) return;
+      animationFrame = window.requestAnimationFrame(() => {
+        const mobile = window.innerWidth <= 767;
+        setIsMobile((current) => (current === mobile ? current : mobile));
+        if (mobile) {
+          setCollapse(0);
+          setIsOpen(false);
+        } else {
+          setIsOpen(true);
+        }
+        animationFrame = 0;
+      });
     };
 
-    window.addEventListener("resize", changeCollapse);
+    window.addEventListener("resize", changeCollapse, { passive: true });
+    changeCollapse();
 
     return () => {
       window.removeEventListener("resize", changeCollapse);
+      if (animationFrame) window.cancelAnimationFrame(animationFrame);
     };
   }, []);
   return (
@@ -102,10 +113,10 @@ const MasterFooter = ({
                   </h4>
                 </div>
                 <Collapse
-                  isOpen={width ? (collapse === 1 ? isOpen : false) : true}>
+                  isOpen={isMobile ? (collapse === 1 ? isOpen : false) : true}>
                   <div className="footer-contant">
                     <div className="footer-logo">
-                      <LogoImage logo={logoName} />
+                      <LogoImage logo={logoName} loading="lazy" />
                     </div>
                     <p>
                       Premium men's wear crafted with precision: sherwani, suits, kurta shalwar, formal shirts, and more. Quality tailoring delivered across Pakistan.
@@ -156,7 +167,7 @@ const MasterFooter = ({
                     } `}>
                     <h4
                       onClick={() => {
-                        if (width) {
+                        if (isMobile) {
                           setIsOpen(!isOpen);
                           setCollapse(2);
                         } else setIsOpen(true);
@@ -166,7 +177,7 @@ const MasterFooter = ({
                     </h4>
                   </div>
                   <Collapse
-                    isOpen={width ? (collapse === 2 ? isOpen : false) : true}>
+                    isOpen={isMobile ? (collapse === 2 ? isOpen : false) : true}>
                     <div className="footer-contant">
                       <ul>
                         <li>
@@ -210,7 +221,7 @@ const MasterFooter = ({
                     } `}>
                     <h4
                       onClick={() => {
-                        if (width) {
+                        if (isMobile) {
                           setIsOpen(!isOpen);
                           setCollapse(3);
                         } else setIsOpen(true);
@@ -220,7 +231,7 @@ const MasterFooter = ({
                     </h4>
                   </div>
                   <Collapse
-                    isOpen={width ? (collapse === 3 ? isOpen : false) : true}>
+                    isOpen={isMobile ? (collapse === 3 ? isOpen : false) : true}>
                     <div className="footer-contant">
                       <ul>
                         <li>
@@ -251,7 +262,7 @@ const MasterFooter = ({
                     } `}>
                     <h4
                       onClick={() => {
-                        if (width) {
+                        if (isMobile) {
                           setIsOpen(!isOpen);
                           setCollapse(4);
                         } else setIsOpen(true);
@@ -261,7 +272,7 @@ const MasterFooter = ({
                     </h4>
                   </div>
                   <Collapse
-                    isOpen={width ? (collapse === 4 ? isOpen : false) : true}>
+                    isOpen={isMobile ? (collapse === 4 ? isOpen : false) : true}>
                     <div className="footer-contant">
                       <ul className="contact-list">
                         <li>

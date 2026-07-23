@@ -1,14 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import Slider from "react-slick";
 import { useQuery } from "@apollo/client";
 import { gql } from "@apollo/client";
 import ProductItems from "../product-box/ProductBox1";
-import { Row, Col, Container, Media } from "reactstrap";
+import { Row, Col, Container } from "reactstrap";
 import CartContext from "../../../helpers/cart";
 import { WishlistContext } from "../../../helpers/wishlist/WishlistContext";
 import PostLoader from "../PostLoader";
 import { CompareContext } from "../../../helpers/Compare/CompareContext";
-import search from "../../../public/assets/images/empty-search.jpg";
 
 const GET_PRODUCTS = gql`
   query products($type: _CategoryType!, $indexFrom: Int!, $limit: Int!) {
@@ -49,7 +48,6 @@ const TopCollection = ({ type, title, subtitle, designClass, noSlider, cartClass
   const contextWishlist = useContext(WishlistContext);
   const comapreList = useContext(CompareContext);
   const quantity = context.quantity;
-  const [delayProduct, setDelayProduct] = useState(true);
 
   var { loading, data } = useQuery(GET_PRODUCTS, {
     variables: {
@@ -59,16 +57,6 @@ const TopCollection = ({ type, title, subtitle, designClass, noSlider, cartClass
     },
   });
 
-  useEffect(() => {
-    if (data === undefined) {
-      noSlider === false;
-    } else {
-      noSlider === true;
-    }
-    setTimeout(() => {
-      setDelayProduct(false);
-    }, 1);
-  }, [delayProduct]);
 
   return (
     <>
@@ -93,7 +81,7 @@ const TopCollection = ({ type, title, subtitle, designClass, noSlider, cartClass
                   </div>
                 )}
 
-                {delayProduct ? (
+                {loading || !data?.products?.items ? (
                   <div className="row mx-0 margin-default">
                     <div className="col-xl-3 col-lg-4 col-6">
                       <PostLoader />

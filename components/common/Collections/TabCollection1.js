@@ -77,6 +77,8 @@ const TabContent = ({
                   src={emptySearch}
                   className="img-fluid mb-4 mx-auto"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
                 <h3>
                   <strong>No products found</strong>
